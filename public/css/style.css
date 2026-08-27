@@ -1,0 +1,287 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+
+#app {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #16213e;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    color: #4fc3f7;
+}
+
+#userInfo {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+#userInfo span {
+    font-size: 14px;
+}
+
+#balance {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+button {
+    background: #4fc3f7;
+    color: #1a1a2e;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #29b6f6;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+section {
+    background: #16213e;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#priceDisplay {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+}
+
+#currentPrice {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #4fc3f7;
+}
+
+#priceChange {
+    font-size: 1.2rem;
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+
+#priceChange.positive {
+    color: #4caf50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+#priceChange.negative {
+    color: #f44336;
+    background: rgba(244, 67, 54, 0.1);
+}
+
+#chartContainer {
+    margin-top: 20px;
+    background: #0f0f1e;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+#tradingSection {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+#tradeForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#tradeForm h3 {
+    margin-bottom: 10px;
+    color: #4fc3f7;
+}
+
+#tradeForm select,
+#tradeForm input {
+    padding: 10px;
+    border: 1px solid #2a3a5e;
+    border-radius: 5px;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-size: 14px;
+}
+
+#tradeForm select:focus,
+#tradeForm input:focus {
+    outline: none;
+    border-color: #4fc3f7;
+}
+
+#tradeForm button {
+    padding: 12px;
+    font-size: 16px;
+    background: #4caf50;
+    color: white;
+}
+
+#tradeForm button:hover {
+    background: #43a047;
+}
+
+#tradesList {
+    margin-top: 20px;
+}
+
+#tradesList h3 {
+    color: #4fc3f7;
+    margin-bottom: 15px;
+}
+
+#tradesTable {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.trade-row {
+    display: grid;
+    grid-template-columns: 80px 60px 70px 80px 150px 80px 70px;
+    gap: 10px;
+    padding: 10px;
+    background: #0f0f1e;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    align-items: center;
+    font-size: 14px;
+}
+
+.trade-row .buy {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.trade-row .sell {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.status-pending {
+    color: #ffa726;
+}
+
+.status-completed {
+    color: #4caf50;
+}
+
+.status-expired {
+    color: #f44336;
+}
+
+.status-cancelled {
+    color: #78909c;
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    display: none;
+    z-index: 1000;
+    animation: slideIn 0.5s ease;
+}
+
+.notification.success {
+    background: #4caf50;
+}
+
+.notification.error {
+    background: #f44336;
+}
+
+.notification.warning {
+    background: #ff9800;
+}
+
+.notification.info {
+    background: #2196f3;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive design */
+@media (max-width: 968px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+    
+    header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    #userInfo {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .trade-row {
+        grid-template-columns: 1fr 1fr;
+        font-size: 12px;
+    }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0f0f1e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #2a3a5e;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #4fc3f7;
+  }
