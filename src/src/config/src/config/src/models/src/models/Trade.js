@@ -12,42 +12,53 @@ const tradeSchema = new mongoose.Schema({
     required: [true, 'Symbol is required'],
     default: 'BTCUSDT'
   },
-  type: {
+  direction: {
     type: String,
-    enum: ['BUY', 'SELL'],
-    required: [true, 'Trade type is required']
+    enum: ['UP', 'DOWN'],
+    required: [true, 'Trade direction is required']
   },
   amount: {
     type: Number,
     required: [true, 'Amount is required'],
-    min: [0.0001, 'Amount must be greater than 0']
+    min: [1, 'Minimum amount is $1'],
+    max: [10000, 'Maximum amount is $10,000']
   },
-  price: {
+  entryPrice: {
     type: Number,
-    required: [true, 'Price is required'],
+    required: [true, 'Entry price is required'],
     min: [0, 'Price must be greater than 0']
+  },
+  exitPrice: {
+    type: Number,
+    default: null
+  },
+  duration: {
+    type: Number, // Duration in seconds
+    required: [true, 'Duration is required'],
+    enum: [30, 60, 120, 300, 600], // 30s, 60s, 2min, 5min, 10min
+    validate: {
+      validator: function(value) {
+        return [30, 60, 120, 300, 600].includes(value);
+      },
+      message: 'Invalid duration. Choose from: 30, 60, 120, 300, 600 seconds'
+    }
   },
   expirationTime: {
     type: Date,
-    required: [true, 'Expiration time is required'],
-    validate: {
-      validator: function(value) {
-        return value > new Date();
-      },
-      message: 'Expiration time must be in the future'
-    }
+    required: [true, 'Expiration time is required']
   },
   status: {
     type: String,
-    enum: ['PENDING', 'COMPLETED', 'EXPIRED', 'CANCELLED'],
+    enum: ['PENDING', 'WIN', 'LOSS', 'EXPIRED', 'CANCELLED'],
     default: 'PENDING'
   },
   profitLoss: {
     type: Number,
     default: 0
   },
-  closedAt: {
-    type: Date
+  payoutMultiplier: {
+    type: Number,
+    default: 0.8 // 80% payout for winning trades
   },
   createdAt: {
     type: Date,
@@ -58,6 +69,10 @@ const tradeSchema = new mongoose.Schema({
     default: Date.now
   }
 });
+
+// Index for efficient queries
+tradeSchema.index({ userId: 1, status: 1 });
+tradeSchema.index({ expirationTime: 1, status: 1 });
 
 // Update timestamps
 tradeSchema.pre('findOneAndUpdate', function(next) {
@@ -86,41 +101,51 @@ const initTradeModel = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 'BTCUSDT'
     },
-    type: {
-      type: DataTypes.ENUM('BUY', 'SELL'),
+    direction: {
+      type: DataTypes.ENUM('UP', 'DOWN'),
       allowNull: false
     },
     amount: {
-      type: DataTypes.DECIMAL(15, 8),
+      type: DataTypes.DECIMAL(15, 2),
       allowNull: false,
       validate: {
-        min: 0.0001
+        min: 1,
+        max: 10000
       }
     },
-    price: {
+    entryPrice: {
       type: DataTypes.DECIMAL(15, 2),
       allowNull: false,
       validate: {
         min: 0
       }
     },
-    expirationTime: {
-      type: DataTypes.DATE,
+    exitPrice: {
+      type: DataTypes.DECIMAL(15, 2),
+      defaultValue: null
+    },
+    duration: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
-        isAfter: new Date().toISOString()
+        isIn: [[30, 60, 120, 300, 600]]
       }
     },
+    expirationTime: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
     status: {
-      type: DataTypes.ENUM('PENDING', 'COMPLETED', 'EXPIRED', 'CANCELLED'),
+      type: DataTypes.ENUM('PENDING', 'WIN', 'LOSS', 'EXPIRED', 'CANCELLED'),
       defaultValue: 'PENDING'
     },
     profitLoss: {
       type: DataTypes.DECIMAL(15, 2),
       defaultValue: 0
     },
-    closedAt: {
-      type: DataTypes.DATE
+    payoutMultiplier: {
+      type: DataTypes.DECIMAL(5, 2),
+      defaultValue: 0.8
     }
   });
   
