@@ -210,3 +210,88 @@ const updateProfile = async (req, res) => {
           username, 
           _id: { $ne: user.id } 
         });
+      } else {
+        existingUser = await User.findOne({ 
+          where: { 
+            username,
+            id: { [Op.ne]: user.id } 
+          } 
+        });
+      }
+      
+      if (existingUser) {
+        return res.status(409).json({
+          success: false,
+          message: 'Username already taken'
+        });
+      }
+      
+      user.username = username;
+      await user.save();
+    }
+    
+    res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: {
+        id: user.id,
+        email: user.email,
+        username: user.username
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Profile update failed',
+      error: error.message
+    });
+  }
+};
+
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const user = req.user;
+    
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide current and new password'
+      });
+    }
+    
+    // Verify current password
+    const isPasswordValid = await user.comparePassword(currentPassword);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: 'Current password is incorrect'
+      });
+    }
+    
+    // Update password
+    user.password = newPassword;
+    await user.save();
+    
+    res.status(200).json({
+      success: true,
+      message: 'Password changed successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Password change failed',
+      error: error.message
+    });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  refreshToken,
+  logout,
+  getProfile,
+  updateProfile,
+  changePassword
+};
