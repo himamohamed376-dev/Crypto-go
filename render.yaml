@@ -10,13 +10,28 @@ services:
         value: production
       - key: PORT
         value: 3000
-      - key: JWT_SECRET
-        generateValue: true
+      - key: DB_TYPE
+        value: mongodb
       - key: MONGODB_URI
         sync: false
+        required: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRE
+        value: 7d
       - key: BINANCE_WS_URL
         value: wss://stream.binance.com:9443/ws
+      - key: BINANCE_API_URL
+        value: https://api.binance.com
       - key: CORS_ORIGIN
-        value: https://your-frontend-url.onrender.com
+        value: https://your-app-name.onrender.com
+      - key: LOG_LEVEL
+        value: info
+      - key: MAX_TRADE_AMOUNT
+        value: 10000
+      - key: MIN_TRADE_AMOUNT
+        value: 1
+      - key: DEFAULT_PAYOUT_MULTIPLIER
+        value: 0.8
     healthCheckPath: /health
     autoDeploy: true
