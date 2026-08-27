@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - منصة التداول</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .auth-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            background: linear-gradient(135deg, #16213e, #1a1a2e);
+            border-radius: 16px;
+            border: 1px solid rgba(79, 195, 247, 0.1);
+        }
+        
+        .auth-container h2 {
+            text-align: center;
+            color: #4fc3f7;
+            margin-bottom: 30px;
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .auth-form input {
+            padding: 12px 16px;
+            background: rgba(15, 15, 30, 0.8);
+            border: 1px solid rgba(42, 58, 94, 0.5);
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .auth-form input:focus {
+            outline: none;
+            border-color: #4fc3f7;
+            box-shadow: 0 0 20px rgba(79, 195, 247, 0.1);
+        }
+        
+        .auth-form button {
+            padding: 14px;
+            background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .auth-form button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(79, 195, 247, 0.3);
+        }
+        
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: #78909c;
+        }
+        
+        .auth-switch a {
+            color: #4fc3f7;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: #f44336;
+            font-size: 0.9rem;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h2>🚀 منصة التداول</h2>
+        <div id="authForm">
+            <h3 id="formTitle">تسجيل الدخول</h3>
+            <div class="auth-form">
+                <input type="text" id="username" placeholder="اسم المستخدم" style="display:none;">
+                <input type="email" id="email" placeholder="البريد الإلكتروني">
+                <input type="password" id="password" placeholder="كلمة المرور">
+                <input type="password" id="confirmPassword" placeholder="تأكيد كلمة المرور" style="display:none;">
+                <button id="authButton">تسجيل الدخول</button>
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+            <div class="auth-switch">
+                <span id="switchText">ليس لديك حساب؟</span>
+                <a id="switchLink">إنشاء حساب جديد</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isLogin = true;
+        
+        document.getElementById('switchLink').addEventListener('click', () => {
+            isLogin = !isLogin;
+            const formTitle = document.getElementById('formTitle');
+            const authButton = document.getElementById('authButton');
+            const usernameField = document.getElementById('username');
+            const confirmField = document.getElementById('confirmPassword');
+            const switchText = document.getElementById('switchText');
+            const switchLink = document.getElementById('switchLink');
+            
+            if (isLogin) {
+                formTitle.textContent = 'تسجيل الدخول';
+                authButton.textContent = 'تسجيل الدخول';
+                usernameField.style.display = 'none';
+                confirmField.style.display = 'none';
+                switchText.textContent = 'ليس لديك حساب؟';
+                switchLink.textContent = 'إنشاء حساب جديد';
+            } else {
+                formTitle.textContent = 'إنشاء حساب جديد';
+                authButton.textContent = 'إنشاء حساب';
+                usernameField.style.display = 'block';
+                confirmField.style.display = 'block';
+                switchText.textContent = 'لديك حساب بالفعل؟';
+                switchLink.textContent = 'تسجيل الدخول';
+            }
+            
+            document.getElementById('errorMessage').style.display = 'none';
+        });
+        
+        document.getElementById('authButton').addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const username = document.getElementById('username').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorMsg = document.getElementById('errorMessage');
+            
+            errorMsg.style.display = 'none';
+            
+            try {
+                let endpoint, data;
+                
+                if (isLogin) {
+                    endpoint = '/api/auth/login';
+                    data = { email, password };
+                } else {
+                    endpoint = '/api/auth/register';
+                    data = { email, password, username };
+                    
+                    if (password !== confirmPassword) {
+                        errorMsg.textContent = 'كلمتا المرور غير متطابقتين';
+                        errorMsg.style.display = 'block';
+                        return;
+                    }
+                    
+                    if (password.length < 6) {
+                        errorMsg.textContent = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+                        errorMsg.style.display = 'block';
+                        return;
+                    }
+                }
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    localStorage.setItem('token', result.data.token);
+                    window.location.href = '/';
+                } else {
+                    errorMsg.textContent = result.message || 'حدث خطأ';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (error) {
+                errorMsg.textContent = 'فشل الاتصال بالخادم';
+                errorMsg.style.display = 'block';
+            }
+        });
+        
+        // Enter key to submit
+        document.querySelectorAll('.auth-form input').forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('authButton').click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
