@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: trading-chart-app
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
+      - key: BINANCE_WS_URL
+        value: wss://stream.binance.com:9443/ws
+      - key: CORS_ORIGIN
+        value: https://your-frontend-url.onrender.com
+    healthCheckPath: /health
+    autoDeploy: true
