@@ -3,40 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تداول العملات - Trading Chart</title>
+    <title>🚀 منصة التداول - Trading Platform</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- TradingView Lightweight Charts -->
+    <script src="https://unpkg.com/lightweight-charts@4.0.1/dist/lightweight-charts.standalone.production.js"></script>
+    <!-- Socket.IO -->
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <div id="app">
+        <!-- Header -->
         <header>
-            <h1>🚀 منصة التداول</h1>
-            <div id="userInfo">
-                <span id="username">مرحباً، زائر</span>
-                <span id="balance">💰 الرصيد: $10,000</span>
-                <button id="logoutBtn">🚪 تسجيل خروج</button>
+            <div class="header-left">
+                <h1>🚀 منصة التداول</h1>
+                <span id="connectionStatus" class="connected">🟢 متصل</span>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span id="username">👋 مرحباً، زائر</span>
+                    <span id="balance">💰 الرصيد: $10,000</span>
+                    <span id="pendingCount" class="badge">0</span>
+                </div>
+                <button id="logoutBtn" class="logout-btn">🚪 تسجيل خروج</button>
             </div>
         </header>
 
         <main>
-            <section id="priceSection">
-                <h2>📈 سعر BTC/USDT</h2>
-                <div id="priceDisplay">
-                    <span id="currentPrice">$0.00</span>
-                    <span id="priceChange">+0.00%</span>
+            <!-- Left Column - Chart -->
+            <section id="chartSection">
+                <div class="section-header">
+                    <h2>📈 سعر BTC/USDT</h2>
+                    <div id="priceDisplay">
+                        <span id="currentPrice">$0.00</span>
+                        <span id="priceChange">+0.00%</span>
+                    </div>
                 </div>
                 <div id="chartContainer">
-                    <canvas id="tradingChart" width="600" height="300"></canvas>
+                    <div id="tradingChart"></div>
                 </div>
             </section>
 
+            <!-- Right Column - Trading Controls -->
             <section id="tradingSection">
+                <!-- Trade Form -->
                 <div id="tradeForm">
                     <h3>📊 تنفيذ صفقة</h3>
                     
                     <div class="form-group">
                         <label>اتجاه الصفقة:</label>
                         <div class="direction-buttons">
-                            <label class="direction-btn up">
+                            <label class="direction-btn up active">
                                 <input type="radio" name="direction" value="UP" checked>
                                 ⬆️ UP
                             </label>
@@ -48,19 +64,23 @@
                     </div>
 
                     <div class="form-group">
-                        <label>المبلغ ($):</label>
-                        <input type="number" id="tradeAmount" placeholder="أدخل المبلغ" min="1" max="10000" step="1">
+                        <label>💰 المبلغ ($):</label>
+                        <div class="amount-input-group">
+                            <input type="number" id="tradeAmount" placeholder="أدخل المبلغ" min="1" max="10000" step="1">
+                            <button class="max-btn" onclick="document.getElementById('tradeAmount').value = document.getElementById('balance').textContent.replace(/[^0-9.]/g, '')">الحد الأقصى</button>
+                        </div>
                         <div class="quick-amounts">
-                            <button onclick="document.getElementById('tradeAmount').value=10">$10</button>
-                            <button onclick="document.getElementById('tradeAmount').value=50">$50</button>
-                            <button onclick="document.getElementById('tradeAmount').value=100">$100</button>
-                            <button onclick="document.getElementById('tradeAmount').value=500">$500</button>
-                            <button onclick="document.getElementById('tradeAmount').value=1000">$1,000</button>
+                            <button>$10</button>
+                            <button>$50</button>
+                            <button>$100</button>
+                            <button>$500</button>
+                            <button>$1,000</button>
+                            <button>$5,000</button>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>مدة الصفقة:</label>
+                        <label>⏱️ مدة الصفقة:</label>
                         <div class="duration-buttons">
                             <button class="duration-btn" data-duration="30">30s</button>
                             <button class="duration-btn active" data-duration="60">60s</button>
@@ -71,25 +91,39 @@
                         <input type="hidden" id="selectedDuration" value="60">
                     </div>
 
-                    <button id="placeTradeBtn">🚀 تنفيذ الصفقة</button>
+                    <button id="placeTradeBtn" class="place-trade-btn">🚀 تنفيذ الصفقة</button>
+                    
+                    <div class="trade-info-bar">
+                        <span>💰 الربح المحتمل: <span id="potentialProfit">$0.00</span></span>
+                        <span>⚡ رسوم: 0%</span>
+                    </div>
                 </div>
 
-                <div id="tradesList">
-                    <h3>📋 صفقاتي</h3>
+                <!-- Active Trades -->
+                <div id="activeTrades">
+                    <h3>📋 الصفقات النشطة <span id="activeCount" class="badge">0</span></h3>
                     <div id="tradesTable"></div>
                 </div>
 
+                <!-- Statistics -->
                 <div id="statistics">
                     <h3>📊 الإحصائيات</h3>
                     <div id="statsContainer"></div>
                 </div>
+
+                <!-- Trade History -->
+                <div id="tradeHistory">
+                    <h3>📜 تاريخ الصفقات</h3>
+                    <div id="historyTable"></div>
+                </div>
             </section>
         </main>
 
+        <!-- Notification -->
         <div id="notification"></div>
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
+    <!-- Client Script -->
     <script src="js/client.js"></script>
 </body>
 </html>
