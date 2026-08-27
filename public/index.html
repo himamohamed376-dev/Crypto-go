@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تداول العملات - Trading Chart</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>منصة التداول</h1>
+            <div id="userInfo">
+                <span id="username">مرحباً، زائر</span>
+                <span id="balance">الرصيد: $10,000</span>
+                <button id="logoutBtn">تسجيل خروج</button>
+            </div>
+        </header>
+
+        <main>
+            <section id="priceSection">
+                <h2>سعر BTC/USDT</h2>
+                <div id="priceDisplay">
+                    <span id="currentPrice">$0.00</span>
+                    <span id="priceChange">+0.00%</span>
+                </div>
+                <div id="chartContainer">
+                    <canvas id="tradingChart"></canvas>
+                </div>
+            </section>
+
+            <section id="tradingSection">
+                <div id="tradeForm">
+                    <h3>تنفيذ صفقة</h3>
+                    <select id="tradeType">
+                        <option value="BUY">شراء</option>
+                        <option value="SELL">بيع</option>
+                    </select>
+                    <input type="number" id="amount" placeholder="الكمية" step="0.001">
+                    <input type="number" id="price" placeholder="السعر" step="0.01">
+                    <input type="datetime-local" id="expirationTime">
+                    <button id="placeTradeBtn">تنفيذ الصفقة</button>
+                </div>
+
+                <div id="tradesList">
+                    <h3>صفقاتي</h3>
+                    <div id="tradesTable"></div>
+                </div>
+            </section>
+        </main>
+
+        <div id="notification"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/client.js"></script>
+</body>
+</html>
