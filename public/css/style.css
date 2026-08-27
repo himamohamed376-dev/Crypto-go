@@ -25,16 +25,20 @@ header {
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 header h1 {
     color: #4fc3f7;
+    font-size: 1.8rem;
 }
 
 #userInfo {
     display: flex;
     gap: 20px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 #userInfo span {
@@ -44,6 +48,7 @@ header h1 {
 #balance {
     color: #4caf50;
     font-weight: bold;
+    font-size: 1.1rem;
 }
 
 button {
@@ -54,11 +59,18 @@ button {
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    transition: background 0.3s;
+    transition: all 0.3s;
 }
 
 button:hover {
     background: #29b6f6;
+    transform: scale(1.02);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 main {
@@ -71,6 +83,11 @@ section {
     background: #16213e;
     padding: 20px;
     border-radius: 10px;
+}
+
+section h2, section h3 {
+    color: #4fc3f7;
+    margin-bottom: 15px;
 }
 
 #priceDisplay {
@@ -90,6 +107,7 @@ section {
     font-size: 1.2rem;
     padding: 5px 15px;
     border-radius: 5px;
+    font-weight: bold;
 }
 
 #priceChange.positive {
@@ -121,9 +139,75 @@ section {
     gap: 15px;
 }
 
-#tradeForm h3 {
-    margin-bottom: 10px;
-    color: #4fc3f7;
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #b0bec5;
+}
+
+.direction-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.direction-btn {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    background: #0f0f1e;
+    border: 2px solid #2a3a5e;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+}
+
+.direction-btn:hover {
+    border-color: #4fc3f7;
+}
+
+.direction-btn input[type="radio"] {
+    display: none;
+}
+
+.direction-btn.up.active {
+    border-color: #4caf50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.direction-btn.down.active {
+    border-color: #f44336;
+    background: rgba(244, 67, 54, 0.1);
+}
+
+.duration-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.duration-btn {
+    padding: 8px 16px;
+    background: #0f0f1e;
+    border: 2px solid #2a3a5e;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+.duration-btn:hover {
+    border-color: #4fc3f7;
+}
+
+.duration-btn.active {
+    border-color: #4fc3f7;
+    background: rgba(79, 195, 247, 0.1);
 }
 
 #tradeForm select,
@@ -142,24 +226,37 @@ section {
     border-color: #4fc3f7;
 }
 
-#tradeForm button {
+.quick-amounts {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.quick-amounts button {
+    padding: 5px 12px;
+    font-size: 0.9rem;
+    background: #2a3a5e;
+    color: #e0e0e0;
+}
+
+.quick-amounts button:hover {
+    background: #3a4a6e;
+}
+
+#placeTradeBtn {
     padding: 12px;
     font-size: 16px;
     background: #4caf50;
     color: white;
+    margin-top: 10px;
 }
 
-#tradeForm button:hover {
+#placeTradeBtn:hover {
     background: #43a047;
 }
 
 #tradesList {
     margin-top: 20px;
-}
-
-#tradesList h3 {
-    color: #4fc3f7;
-    margin-bottom: 15px;
 }
 
 #tradesTable {
@@ -169,40 +266,75 @@ section {
 
 .trade-row {
     display: grid;
-    grid-template-columns: 80px 60px 70px 80px 150px 80px 70px;
-    gap: 10px;
+    grid-template-columns: 70px 50px 70px 80px 80px 50px 70px 80px 70px;
+    gap: 8px;
     padding: 10px;
     background: #0f0f1e;
     margin-bottom: 8px;
     border-radius: 5px;
     align-items: center;
-    font-size: 14px;
+    font-size: 13px;
 }
 
-.trade-row .buy {
+.trade-row .up {
     color: #4caf50;
     font-weight: bold;
 }
 
-.trade-row .sell {
+.trade-row .down {
     color: #f44336;
     font-weight: bold;
 }
 
 .status-pending {
     color: #ffa726;
+    font-weight: bold;
 }
 
-.status-completed {
+.status-win {
     color: #4caf50;
+    font-weight: bold;
+}
+
+.status-loss {
+    color: #f44336;
+    font-weight: bold;
 }
 
 .status-expired {
-    color: #f44336;
+    color: #78909c;
 }
 
 .status-cancelled {
     color: #78909c;
+}
+
+.profit {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.loss {
+    color: #f44336;
+    font-weight: bold;
+}
+
+#statistics {
+    margin-top: 20px;
+}
+
+#statsContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #0f0f1e;
+    border-radius: 5px;
 }
 
 .notification {
@@ -216,22 +348,24 @@ section {
     display: none;
     z-index: 1000;
     animation: slideIn 0.5s ease;
+    max-width: 400px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .notification.success {
-    background: #4caf50;
+    background: linear-gradient(135deg, #4caf50, #43a047);
 }
 
 .notification.error {
-    background: #f44336;
+    background: linear-gradient(135deg, #f44336, #d32f2f);
 }
 
 .notification.warning {
-    background: #ff9800;
+    background: linear-gradient(135deg, #ff9800, #f57c00);
 }
 
 .notification.info {
-    background: #2196f3;
+    background: linear-gradient(135deg, #2196f3, #1976d2);
 }
 
 @keyframes slideIn {
@@ -242,29 +376,6 @@ section {
     to {
         transform: translateX(0);
         opacity: 1;
-    }
-}
-
-/* Responsive design */
-@media (max-width: 968px) {
-    main {
-        grid-template-columns: 1fr;
-    }
-    
-    header {
-        flex-direction: column;
-        gap: 15px;
-        text-align: center;
-    }
-    
-    #userInfo {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .trade-row {
-        grid-template-columns: 1fr 1fr;
-        font-size: 12px;
     }
 }
 
@@ -284,4 +395,56 @@ section {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #4fc3f7;
-  }
+}
+
+/* Responsive design */
+@media (max-width: 968px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+    
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    #userInfo {
+        justify-content: center;
+    }
+    
+    .trade-row {
+        grid-template-columns: 1fr 1fr 1fr;
+        font-size: 12px;
+        gap: 5px;
+    }
+    
+    .direction-buttons {
+        flex-direction: row;
+    }
+    
+    #statsContainer {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .trade-row {
+        grid-template-columns: 1fr 1fr;
+        font-size: 11px;
+    }
+    
+    #currentPrice {
+        font-size: 1.8rem;
+    }
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.loading {
+    animation: pulse 1.5s ease-in-out infinite;
+        }
