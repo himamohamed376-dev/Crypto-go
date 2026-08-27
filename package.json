@@ -6,7 +6,13 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "test": "jest"
+    "test": "jest",
+    "build": "npm install --production",
+    "postinstall": "echo '✅ Dependencies installed successfully'"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -23,7 +29,9 @@
     "express-rate-limit": "^6.7.0",
     "joi": "^17.9.2",
     "winston": "^3.8.2",
-    "compression": "^1.7.4"
+    "compression": "^1.7.4",
+    "ws": "^8.13.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22",
@@ -31,16 +39,18 @@
     "supertest": "^6.3.3",
     "eslint": "^8.38.0"
   },
-  "engines": {
-    "node": ">=16.0.0"
-  },
   "keywords": [
     "trading",
     "chart",
     "websocket",
     "binance",
-    "express"
+    "express",
+    "real-time"
   ],
   "author": "Your Name",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/trading-chart-app"
+  }
 }
